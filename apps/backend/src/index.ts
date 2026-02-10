@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { MongoProductRepository } from './infrastructure/repositories/MongoProductRepository';
 import { MongoUserRepository } from './infrastructure/repositories/MongoUserRepository';
-import { CreateProductUseCase, GetProductUseCase, UpdateProductUseCase, DeleteProductUseCase } from './application/use-cases/ProductUseCases';
+import { CreateProductUseCase, GetProductUseCase, GetAllProductsUseCase, UpdateProductUseCase, DeleteProductUseCase } from './application/use-cases/ProductUseCases';
 import { CreateUserUseCase, GetUserUseCase, UpdateUserUseCase, LoginUserUseCase, LogoutUserUseCase } from './application/use-cases/UserUseCases';
 import { ProductController } from './presentation/controllers/ProductController';
 import { UserController } from './presentation/controllers/UserController';
@@ -27,9 +27,10 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/clean-archi
 const productRepository = new MongoProductRepository();
 const createProductUseCase = new CreateProductUseCase(productRepository);
 const getProductUseCase = new GetProductUseCase(productRepository);
+const getAllProductsUseCase = new GetAllProductsUseCase(productRepository);
 const updateProductUseCase = new UpdateProductUseCase(productRepository);
 const deleteProductUseCase = new DeleteProductUseCase(productRepository);
-const productController = new ProductController(createProductUseCase, getProductUseCase, updateProductUseCase, deleteProductUseCase);
+const productController = new ProductController(createProductUseCase, getProductUseCase, getAllProductsUseCase, updateProductUseCase, deleteProductUseCase);
 const productRoutes = setupProductRoutes(productController);
 
 const userRepository = new MongoUserRepository();

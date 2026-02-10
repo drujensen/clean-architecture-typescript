@@ -19,5 +19,5 @@ RUN npm run build
 # Expose the port the app runs on
 EXPOSE 5173
 
-# Command to run the application
-CMD ["npm", "run", "preview"]
+# Command to run the application (bind to all interfaces)
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]

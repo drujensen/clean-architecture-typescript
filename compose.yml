@@ -4,7 +4,7 @@ services:
       context: apps/frontend
       dockerfile: Dockerfile
     ports:
-      - "5173:5173"
+      - "5173:4173"
     depends_on:
       - app
 

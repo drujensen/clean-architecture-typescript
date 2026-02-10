@@ -3,35 +3,68 @@ import MainLayout from '../layouts/MainLayout';
 import ProductCard from '../components/ProductCard';
 import ProductForm from '../components/ProductForm';
 import { Product } from '../types/product';
+import ProductService from '../services/productService';
 
 const ProductPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock data - in a real app, this would come from an API service
+  const productService = new ProductService();
+
   useEffect(() => {
-    const mockProducts: Product[] = [
-      { id: 1, name: 'Laptop', description: 'High-performance laptop', price: 1200 },
-      { id: 2, name: 'Smartphone', description: 'Latest smartphone model', price: 800 },
-      { id: 3, name: 'Tablet', description: '10-inch tablet with stylus', price: 400 },
-    ];
-
-    setTimeout(() => {
-      setProducts(mockProducts);
-      setLoading(false);
-    }, 500);
+    loadProducts();
   }, []);
 
-  const handleAddProduct = (newProduct: Product) => {
-    setProducts([...products, newProduct]);
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const fetchedProducts = await productService.getAllProducts();
+      setProducts(fetchedProducts);
+    } catch (err) {
+      setError('Failed to load products');
+      console.error('Error loading products:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleUpdateProduct = (updatedProduct: Product) => {
-    setProducts(products.map(p => p.id === updatedProduct.id ? updatedProduct : p));
+  const handleAddProduct = async (newProduct: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => {
+    try {
+      setError(null);
+      const createdProduct = await productService.createProduct(newProduct);
+      setProducts([...products, createdProduct]);
+    } catch (err) {
+      setError('Failed to add product');
+      console.error('Error adding product:', err);
+    }
   };
 
-  const handleDeleteProduct = (id: number) => {
-    setProducts(products.filter(p => p.id !== id));
+  const handleUpdateProduct = async (updatedProduct: Product) => {
+    try {
+      setError(null);
+      const product = await productService.updateProduct(updatedProduct.id, {
+        name: updatedProduct.name,
+        price: updatedProduct.price,
+        categoryId: updatedProduct.categoryId
+      });
+      setProducts(products.map(p => p.id === product.id ? product : p));
+    } catch (err) {
+      setError('Failed to update product');
+      console.error('Error updating product:', err);
+    }
+  };
+
+  const handleDeleteProduct = async (id: string) => {
+    try {
+      setError(null);
+      await productService.deleteProduct(id);
+      setProducts(products.filter(p => p.id !== id));
+    } catch (err) {
+      setError('Failed to delete product');
+      console.error('Error deleting product:', err);
+    }
   };
 
   if (loading) {
@@ -51,6 +84,12 @@ const ProductPage: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Product Management</h1>
           <p className="text-gray-600">Manage your product inventory with CRUD operations</p>
         </div>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            {error}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1">
@@ -83,7 +122,7 @@ const ProductPage: React.FC = () => {
                     <ProductCard
                       key={product.id}
                       product={product}
-                      onDelete={handleDeleteProduct}
+                      onDelete={(id: string) => handleDeleteProduct(id)}
                     />
                   ))}
                 </div>

@@ -2,58 +2,61 @@ import ApiService from './apiService';
 import { Product } from '../types/product';
 
 class ProductService {
-  // @ts-ignore - apiService will be used when switching to real API calls
   private apiService: ApiService;
 
-  constructor() {
-    this.apiService = new ApiService();
+  constructor(baseURL = 'http://localhost:3000/api') {
+    this.apiService = new ApiService(baseURL);
   }
 
   async getAllProducts(): Promise<Product[]> {
     try {
-      // In a real app, this would call the actual API
-      // return await this.apiService.get<Product[]>('/products');
-
-      // Mock data for now
-      return new Promise(resolve => {
-        setTimeout(() => {
-          resolve([
-            { id: 1, name: 'Laptop', description: 'High-performance laptop', price: 1200 },
-            { id: 2, name: 'Smartphone', description: 'Latest smartphone model', price: 800 },
-            { id: 3, name: 'Tablet', description: '10-inch tablet with stylus', price: 400 },
-          ]);
-        }, 500);
-      });
+      return await this.apiService.get<Product[]>('/products');
     } catch (error) {
       console.error('Error fetching products:', error);
       throw error;
     }
   }
 
-  async createProduct(product: Omit<Product, 'id'>): Promise<Product> {
+  async createProduct(product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<Product> {
     try {
-      // In a real app: return await this.apiService.post<Product>('/products', product);
-      return { ...product, id: Date.now() };
+      // For now, use a default categoryId since the backend requires it
+      const productData = {
+        ...product,
+        categoryId: product.categoryId || 'default-category'
+      };
+      const createdProduct = await this.apiService.post<{ id: string }>('/products', productData);
+
+      // Return the full product by fetching it
+      return await this.getProductById(createdProduct.id);
     } catch (error) {
       console.error('Error creating product:', error);
       throw error;
     }
   }
 
-  async updateProduct(product: Product): Promise<Product> {
+  async getProductById(id: string): Promise<Product> {
     try {
-      // In a real app: return await this.apiService.put<Product>(`/products/${product.id}`, product);
-      return product;
+      return await this.apiService.get<Product>(`/products/${id}`);
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      throw error;
+    }
+  }
+
+  async updateProduct(id: string, product: Partial<Omit<Product, 'id' | 'createdAt' | 'updatedAt'>>): Promise<Product> {
+    try {
+      await this.apiService.put(`/products/${id}`, product);
+      // Return the updated product
+      return await this.getProductById(id);
     } catch (error) {
       console.error('Error updating product:', error);
       throw error;
     }
   }
 
-  async deleteProduct(_id: number): Promise<void> {
+  async deleteProduct(id: string): Promise<void> {
     try {
-      // In a real app: await this.apiService.delete(`/products/${_id}`);
-      return Promise.resolve();
+      await this.apiService.delete(`/products/${id}`);
     } catch (error) {
       console.error('Error deleting product:', error);
       throw error;

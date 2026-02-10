@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
-import { CreateProductUseCase, GetProductUseCase, UpdateProductUseCase, DeleteProductUseCase } from '../../application/use-cases/ProductUseCases';
+import { CreateProductUseCase, GetProductUseCase, GetAllProductsUseCase, UpdateProductUseCase, DeleteProductUseCase } from '../../application/use-cases/ProductUseCases';
 import { ProductId } from '../../domain';
 
 export class ProductController {
   constructor(
     private readonly createProductUseCase: CreateProductUseCase,
     private readonly getProductUseCase: GetProductUseCase,
+    private readonly getAllProductsUseCase: GetAllProductsUseCase,
     private readonly updateProductUseCase: UpdateProductUseCase,
     private readonly deleteProductUseCase: DeleteProductUseCase
   ) {}
@@ -30,6 +31,22 @@ export class ProductController {
       res.status(201).json({ id: id.getValue() });
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
+    }
+  }
+
+  async getAllProducts(req: Request, res: Response): Promise<void> {
+    try {
+      const products = await this.getAllProductsUseCase.execute();
+      res.json(products.map(product => ({
+        id: product.getId().getValue(),
+        name: product.getName(),
+        price: product.getPrice().getValue(),
+        categoryId: product.getCategoryId(),
+        createdAt: product.getCreatedAt(),
+        updatedAt: product.getUpdatedAt(),
+      })));
+    } catch (error) {
+      res.status(500).json({ error: (error as Error).message });
     }
   }
 

@@ -1,6 +1,9 @@
 export interface Product {
-  id: number;
+  id: string;
   name: string;
-  description: string;
   price: number;
+  categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+  description?: string; // Optional for frontend use
 }

@@ -2,15 +2,23 @@ import React, { useState } from 'react';
 import { Product } from '../types/product';
 
 interface ProductFormProps {
-  onAddProduct: (product: Product) => void;
+  onAddProduct: (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => void;
   onUpdateProduct: (product: Product) => void;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct, onUpdateProduct }) => {
-  const [formData, setFormData] = useState<Omit<Product, 'id'>>({
+interface FormData {
+  name: string;
+  description: string;
+  price: number;
+  categoryId: string;
+}
+
+const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct, onUpdateProduct: _onUpdateProduct }) => {
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     description: '',
-    price: 0
+    price: 0,
+    categoryId: 'default-category'
   });
   const [isEditing, setIsEditing] = useState(false);
 
@@ -25,23 +33,20 @@ const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct, onUpdateProduct
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newProduct: Product = {
-      ...formData,
-      id: Date.now() // Simple ID generation for demo purposes
-    };
-
     if (isEditing) {
-      onUpdateProduct(newProduct);
+      // For editing, we'd need the full product object, but for now just add
+      onAddProduct(formData);
       setIsEditing(false);
     } else {
-      onAddProduct(newProduct);
+      onAddProduct(formData);
     }
 
     // Reset form
     setFormData({
       name: '',
       description: '',
-      price: 0
+      price: 0,
+      categoryId: 'default-category'
     });
   };
 
@@ -50,7 +55,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct, onUpdateProduct
     setFormData({
       name: '',
       description: '',
-      price: 0
+      price: 0,
+      categoryId: 'default-category'
     });
   };
 
