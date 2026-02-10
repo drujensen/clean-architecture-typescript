@@ -17,7 +17,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    price: 0
+    price: 0.00
   });
 
   // Update form data when editing product changes
@@ -32,7 +32,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
       setFormData({
         name: '',
         description: '',
-        price: 0
+        price: 0.00
       });
     }
   }, [editingProduct]);
@@ -127,7 +127,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           {editingProduct ? 'Update Product' : 'Add Product'}
         </button>
 
-        {(editingProduct || formData.name.trim() || formData.description.trim() || formData.price !== 0) && (
+        {(editingProduct || formData.name.trim() || formData.description.trim() || formData.price !== 0.00) && (
           <button
             type="button"
             onClick={handleCancel}
