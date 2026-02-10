@@ -6,7 +6,7 @@ interface IProductDocument {
   _id: string;
   name: string;
   price: number;
-  categoryId: string;
+  description: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,7 +15,7 @@ const productSchema = new Schema<IProductDocument>({
   _id: { type: String, required: true },
   name: { type: String, required: true },
   price: { type: Number, required: true },
-  categoryId: { type: String, required: true },
+  description: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
@@ -30,7 +30,7 @@ export class MongoProductRepository implements IProductRepository {
         _id: product.getId().getValue(),
         name: product.getName(),
         price: product.getPrice().getValue(),
-        categoryId: product.getCategoryId(),
+        description: product.getDescription(),
         createdAt: product.getCreatedAt(),
         updatedAt: product.getUpdatedAt(),
       },
@@ -45,7 +45,7 @@ export class MongoProductRepository implements IProductRepository {
       ProductId.fromString(doc._id),
       doc.name,
       Price.create(doc.price),
-      doc.categoryId
+      doc.description
     );
     // Since we're reconstructing, set updatedAt from DB
     (product as any).updatedAt = doc.updatedAt;
@@ -59,7 +59,7 @@ export class MongoProductRepository implements IProductRepository {
         ProductId.fromString(doc._id),
         doc.name,
         Price.create(doc.price),
-        doc.categoryId
+        doc.description
       );
       (product as any).updatedAt = doc.updatedAt;
       return product;

@@ -13,7 +13,7 @@ export class ProductController {
 
   async createProduct(req: Request, res: Response): Promise<void> {
     try {
-      const { name, price, categoryId } = req.body;
+      const { name, price, description } = req.body;
 
       // Validate input types
       if (typeof name !== 'string' || !name.trim()) {
@@ -22,12 +22,11 @@ export class ProductController {
       if (typeof price !== 'number' || price <= 0) {
         throw new Error('Price must be a positive number');
       }
-      if (!categoryId) {
-        throw new Error('CategoryId is required');
+      if (typeof description !== 'string') {
+        throw new Error('Description must be a string');
       }
 
-      const categoryIdStr = categoryId.toString();
-      const id = await this.createProductUseCase.execute(name.trim(), price, categoryIdStr);
+      const id = await this.createProductUseCase.execute(name.trim(), price, description);
       res.status(201).json({ id: id.getValue() });
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
@@ -41,7 +40,7 @@ export class ProductController {
         id: product.getId().getValue(),
         name: product.getName(),
         price: product.getPrice().getValue(),
-        categoryId: product.getCategoryId(),
+        description: product.getDescription(),
         createdAt: product.getCreatedAt(),
         updatedAt: product.getUpdatedAt(),
       })));
@@ -62,7 +61,7 @@ export class ProductController {
         id: product.getId().getValue(),
         name: product.getName(),
         price: product.getPrice().getValue(),
-        categoryId: product.getCategoryId(),
+        description: product.getDescription(),
         createdAt: product.getCreatedAt(),
         updatedAt: product.getUpdatedAt(),
       });
@@ -74,7 +73,7 @@ export class ProductController {
   async updateProduct(req: Request, res: Response): Promise<void> {
     try {
       const id = ProductId.fromString(req.params.id as string);
-      const { name, price } = req.body;
+      const { name, price, description } = req.body;
 
       // Validate input types if provided
       if (name !== undefined && (typeof name !== 'string' || !name.trim())) {
@@ -83,8 +82,11 @@ export class ProductController {
       if (price !== undefined && (typeof price !== 'number' || price <= 0)) {
         throw new Error('Price must be a positive number');
       }
+      if (description !== undefined && typeof description !== 'string') {
+        throw new Error('Description must be a string');
+      }
 
-      await this.updateProductUseCase.execute(id, name?.trim(), price);
+      await this.updateProductUseCase.execute(id, name?.trim(), price, description);
       res.status(204).send();
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });

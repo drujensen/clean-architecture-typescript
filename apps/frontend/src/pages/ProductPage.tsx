@@ -9,6 +9,7 @@ const ProductPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const productService = new ProductService();
 
@@ -46,14 +47,23 @@ const ProductPage: React.FC = () => {
       setError(null);
       const product = await productService.updateProduct(updatedProduct.id, {
         name: updatedProduct.name,
-        price: updatedProduct.price,
-        categoryId: updatedProduct.categoryId
+        description: updatedProduct.description,
+        price: updatedProduct.price
       });
       setProducts(products.map(p => p.id === product.id ? product : p));
+      setEditingProduct(null);
     } catch (err) {
       setError('Failed to update product');
       console.error('Error updating product:', err);
     }
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingProduct(null);
   };
 
   const handleDeleteProduct = async (id: string) => {
@@ -98,6 +108,8 @@ const ProductPage: React.FC = () => {
               <ProductForm
                 onAddProduct={handleAddProduct}
                 onUpdateProduct={handleUpdateProduct}
+                editingProduct={editingProduct}
+                onCancelEdit={handleCancelEdit}
               />
             </div>
           </div>
@@ -123,6 +135,7 @@ const ProductPage: React.FC = () => {
                       key={product.id}
                       product={product}
                       onDelete={(id: string) => handleDeleteProduct(id)}
+                      onEdit={handleEditProduct}
                     />
                   ))}
                 </div>

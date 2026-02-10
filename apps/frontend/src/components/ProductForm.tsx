@@ -4,23 +4,38 @@ import { Product } from '../types/product';
 interface ProductFormProps {
   onAddProduct: (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => void;
   onUpdateProduct: (product: Product) => void;
+  editingProduct?: Product | null;
+  onCancelEdit?: () => void;
 }
 
-interface FormData {
-  name: string;
-  description: string;
-  price: number;
-  categoryId: string;
-}
-
-const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct, onUpdateProduct: _onUpdateProduct }) => {
-  const [formData, setFormData] = useState<FormData>({
+const ProductForm: React.FC<ProductFormProps> = ({
+  onAddProduct,
+  onUpdateProduct,
+  editingProduct,
+  onCancelEdit
+}) => {
+  const [formData, setFormData] = useState({
     name: '',
     description: '',
-    price: 0,
-    categoryId: 'default-category'
+    price: 0
   });
-  const [isEditing, setIsEditing] = useState(false);
+
+  // Update form data when editing product changes
+  React.useEffect(() => {
+    if (editingProduct) {
+      setFormData({
+        name: editingProduct.name,
+        description: editingProduct.description,
+        price: editingProduct.price
+      });
+    } else {
+      setFormData({
+        name: '',
+        description: '',
+        price: 0
+      });
+    }
+  }, [editingProduct]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -33,31 +48,35 @@ const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct, onUpdateProduct
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isEditing) {
-      // For editing, we'd need the full product object, but for now just add
-      onAddProduct(formData);
-      setIsEditing(false);
+    if (editingProduct) {
+      // Update existing product
+      const updatedProduct = {
+        ...editingProduct,
+        ...formData
+      };
+      onUpdateProduct(updatedProduct);
+      onCancelEdit?.();
     } else {
+      // Create new product
       onAddProduct(formData);
+      setFormData({
+        name: '',
+        description: '',
+        price: 0
+      });
     }
-
-    // Reset form
-    setFormData({
-      name: '',
-      description: '',
-      price: 0,
-      categoryId: 'default-category'
-    });
   };
 
   const handleCancel = () => {
-    setIsEditing(false);
-    setFormData({
-      name: '',
-      description: '',
-      price: 0,
-      categoryId: 'default-category'
-    });
+    if (editingProduct) {
+      onCancelEdit?.();
+    } else {
+      setFormData({
+        name: '',
+        description: '',
+        price: 0
+      });
+    }
   };
 
   return (
@@ -105,10 +124,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct, onUpdateProduct
           type="submit"
           className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200"
         >
-          {isEditing ? 'Update Product' : 'Add Product'}
+          {editingProduct ? 'Update Product' : 'Add Product'}
         </button>
 
-        {isEditing && (
+        {(editingProduct || formData.name || formData.description || formData.price) && (
           <button
             type="button"
             onClick={handleCancel}

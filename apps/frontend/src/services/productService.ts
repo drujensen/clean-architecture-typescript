@@ -19,12 +19,7 @@ class ProductService {
 
   async createProduct(product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<Product> {
     try {
-      // For now, use a default categoryId since the backend requires it
-      const productData = {
-        ...product,
-        categoryId: product.categoryId || 'default-category'
-      };
-      const createdProduct = await this.apiService.post<{ id: string }>('/products', productData);
+      const createdProduct = await this.apiService.post<{ id: string }>('/products', product);
 
       // Return the full product by fetching it
       return await this.getProductById(createdProduct.id);
@@ -43,7 +38,7 @@ class ProductService {
     }
   }
 
-  async updateProduct(id: string, product: Partial<Omit<Product, 'id' | 'createdAt' | 'updatedAt'>>): Promise<Product> {
+  async updateProduct(id: string, product: Partial<Pick<Product, 'name' | 'description' | 'price'>>): Promise<Product> {
     try {
       await this.apiService.put(`/products/${id}`, product);
       // Return the updated product

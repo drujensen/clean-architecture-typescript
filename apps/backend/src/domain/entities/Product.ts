@@ -5,15 +5,15 @@ export class Product {
     private readonly id: ProductId,
     private name: string,
     private price: Price,
-    private categoryId: string,
+    private description: string,
     private readonly createdAt: Date,
     private updatedAt: Date
   ) {}
 
-  static create(id: ProductId, name: string, price: Price, categoryId: string): Product {
+  static create(id: ProductId, name: string, price: Price, description: string): Product {
     const now = new Date();
     if (!name) throw new Error('Product name cannot be empty');
-    return new Product(id, name, price, categoryId, now, now);
+    return new Product(id, name, price, description, now, now);
   }
 
   getId(): ProductId {
@@ -39,8 +39,13 @@ export class Product {
     this.updatedAt = new Date();
   }
 
-  getCategoryId(): string {
-    return this.categoryId;
+  getDescription(): string {
+    return this.description;
+  }
+
+  updateDescription(newDescription: string): void {
+    this.description = newDescription;
+    this.updatedAt = new Date();
   }
 
   getCreatedAt(): Date {
