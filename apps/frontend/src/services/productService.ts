@@ -46,7 +46,7 @@ class ProductService {
   async updateProduct(id: string, product: Partial<Pick<Product, 'name' | 'description' | 'price'>>): Promise<Product> {
     try {
       await this.apiService.put(`/products/${id}`, product);
-      // Return the updated product
+      // PUT returns 204 No Content, so fetch the updated product
       return await this.getProductById(id);
     } catch (error) {
       console.error('Error updating product:', error);
