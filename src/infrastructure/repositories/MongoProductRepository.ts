@@ -1,5 +1,5 @@
 import { IProductRepository } from '../../domain/repositories';
-import { Product, ProductId, Price } from '../../domain/entities';
+import { Product, ProductId, Price } from '../../domain';
 import mongoose, { Schema } from 'mongoose';
 
 interface IProductDocument {

@@ -1,42 +1,4 @@
-import { v7 as uuidv7 } from 'uuid';
-
-export class ProductId {
-  private constructor(private readonly value: string) {}
-
-  static create(): ProductId {
-    return new ProductId(uuidv7());
-  }
-
-  static fromString(value: string): ProductId {
-    if (!value) throw new Error('ProductId cannot be empty');
-    return new ProductId(value);
-  }
-
-  getValue(): string {
-    return this.value;
-  }
-
-  equals(other: ProductId): boolean {
-    return this.value === other.value;
-  }
-}
-
-export class Price {
-  private constructor(private readonly value: number) {}
-
-  static create(value: number): Price {
-    if (value < 0) throw new Error('Price cannot be negative');
-    return new Price(value);
-  }
-
-  getValue(): number {
-    return this.value;
-  }
-
-  equals(other: Price): boolean {
-    return this.value === other.value;
-  }
-}
+import { ProductId, Price } from '../value-objects';
 
 export class Product {
   private constructor(

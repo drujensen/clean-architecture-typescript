@@ -1,4 +1,4 @@
-import { User, UserId } from '../entities/User';
+import { User, UserId } from '../';
 
 export interface IUserRepository {
   save(user: User): Promise<void>;

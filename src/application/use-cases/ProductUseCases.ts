@@ -1,4 +1,4 @@
-import { Product, ProductId, Price } from '../../domain/entities';
+import { Product, ProductId, Price } from '../../domain';
 import { IProductRepository } from '../../domain/repositories';
 import { inject } from 'inversify';
 
