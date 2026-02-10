@@ -24,7 +24,9 @@ Dependencies are manually injected at application startup, following Go-style de
    ```
 3. For backend: Run with Docker: `docker-compose up` (in apps/backend/)
 4. Or run backend locally: `npm run dev:backend`
-5. For frontend: `npm run --workspace=frontend start` (after creating the React app)
+5. For frontend: 
+   - First build the application: `npm run build:frontend`
+   - Then run development server: `npm run dev:frontend`
 
 ## Scripts
 
