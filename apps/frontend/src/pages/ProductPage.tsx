@@ -45,11 +45,13 @@ const ProductPage: React.FC = () => {
   const handleUpdateProduct = async (updatedProduct: Product) => {
     try {
       setError(null);
-      const product = await productService.updateProduct(updatedProduct.id, {
+      // Extract only the fields that can be updated
+      const updateData = {
         name: updatedProduct.name,
         description: updatedProduct.description,
         price: updatedProduct.price
-      });
+      };
+      const product = await productService.updateProduct(updatedProduct.id, updateData);
       setProducts(products.map(p => p.id === product.id ? product : p));
       setEditingProduct(null);
     } catch (err) {
