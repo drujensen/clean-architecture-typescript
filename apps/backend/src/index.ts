@@ -1,5 +1,6 @@
 
 import express from 'express';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { MongoProductRepository } from './infrastructure/repositories/MongoProductRepository';
@@ -14,6 +15,15 @@ import { setupUserRoutes } from './presentation/routes/UserRoutes';
 dotenv.config();
 
 const app = express();
+
+// Configure CORS
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:3000'], // Allow frontend and backend origins
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
