@@ -14,7 +14,10 @@ Dependencies are manually injected at application startup, following Go-style de
 ## Setup
 
 1. Install dependencies: `npm install`
-2. Copy `.env` and configure environment variables.
+2. Copy `.env-example` to `.env` and configure environment variables:
+   ```bash
+   cp .env-example .env
+   ```
 3. Run with Docker: `docker-compose up`
 4. Or run locally: `npm run dev`
 
