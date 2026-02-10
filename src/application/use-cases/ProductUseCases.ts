@@ -1,11 +1,8 @@
 import { Product, ProductId, Price } from '../../domain';
 import { IProductRepository } from '../../domain/repositories';
-import { inject } from 'inversify';
 
 export class CreateProductUseCase {
-  constructor(
-    @inject('IProductRepository') private readonly productRepository: IProductRepository
-  ) {}
+  constructor(private readonly productRepository: IProductRepository) {}
 
   async execute(name: string, priceValue: number, categoryId: string): Promise<ProductId> {
     const id = ProductId.create();
@@ -18,7 +15,7 @@ export class CreateProductUseCase {
 }
 
 export class GetProductUseCase {
-  constructor(@inject('IProductRepository') private readonly productRepository: IProductRepository) {}
+  constructor(private readonly productRepository: IProductRepository) {}
 
   async execute(id: ProductId): Promise<Product | null> {
     return await this.productRepository.findById(id);
@@ -26,9 +23,7 @@ export class GetProductUseCase {
 }
 
 export class UpdateProductUseCase {
-  constructor(
-    @inject('IProductRepository') private readonly productRepository: IProductRepository
-  ) {}
+  constructor(private readonly productRepository: IProductRepository) {}
 
   async execute(id: ProductId, name?: string, priceValue?: number): Promise<void> {
     const product = await this.productRepository.findById(id);

@@ -1,11 +1,8 @@
 import { ProductId } from '../../domain';
 import { IProductRepository } from '../../domain/repositories';
-import { inject } from 'inversify';
 
 export class DeleteProductUseCase {
-  constructor(
-    @inject('IProductRepository') private readonly productRepository: IProductRepository
-  ) {}
+  constructor(private readonly productRepository: IProductRepository) {}
 
   async execute(id: ProductId): Promise<void> {
     const product = await this.productRepository.findById(id);
