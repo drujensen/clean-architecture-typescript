@@ -26,7 +26,8 @@ Dependencies are manually injected at application startup, following Go-style de
 - `npm run build`: Compile TypeScript
 - `npm run start`: Run production build
 - `npm run dev`: Run development server with nodemon
-- `npm run test`: Run Jest tests
+- `npm run test`: Run Jest unit tests
+- `npm run test -- --coverage`: Run tests with coverage report
 - `npm run lint`: Run ESLint
 
 ## Technologies
@@ -64,6 +65,24 @@ Organized test files for API endpoints:
 - `http/user/`: User management and authentication
 
 Use VS Code REST Client or similar tools to run these tests.
+
+## Testing
+
+The project includes comprehensive unit tests covering:
+
+- **Value Objects**: ID generation, validation, equality
+- **Entities**: Business rules, state changes
+- **Use Cases**: Application logic with mocked dependencies
+
+Run tests:
+```bash
+npm test
+```
+
+Run with coverage:
+```bash
+npm run test -- --coverage
+```
 
 ## ID Generation
 
