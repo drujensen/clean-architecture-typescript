@@ -14,7 +14,7 @@ class ApiService {
     return response.json();
   }
 
-  async post<T>(endpoint: string, data: any): Promise<T> {
+  async post<T>(endpoint: string, data: unknown): Promise<T> {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: 'POST',
       headers: {
@@ -28,7 +28,7 @@ class ApiService {
     return response.json();
   }
 
-  async put<T>(endpoint: string, data: any): Promise<T> {
+  async put<T>(endpoint: string, data: unknown): Promise<T> {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: 'PUT',
       headers: {

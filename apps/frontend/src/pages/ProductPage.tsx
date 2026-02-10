@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import MainLayout from '../layouts/MainLayout';
 import ProductCard from '../components/ProductCard';
 import ProductForm from '../components/ProductForm';
@@ -11,13 +11,9 @@ const ProductPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-  const productService = new ProductService();
+  const productService = useMemo(() => new ProductService(), []);
 
-  useEffect(() => {
-    loadProducts();
-  }, []);
-
-  const loadProducts = async () => {
+  const loadProducts = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -29,7 +25,11 @@ const ProductPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [productService]);
+
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
 
   const handleAddProduct = async (newProduct: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
