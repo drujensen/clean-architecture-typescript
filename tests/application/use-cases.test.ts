@@ -1,7 +1,7 @@
-import { CreateProductUseCase, GetProductUseCase, UpdateProductUseCase, DeleteProductUseCase } from '../src/application/use-cases/ProductUseCases';
-import { CreateUserUseCase, GetUserUseCase, UpdateUserUseCase, LoginUserUseCase } from '../src/application/use-cases/UserUseCases';
-import { Product, ProductId, Price } from '../src/domain';
-import { User, UserId, Email } from '../src/domain';
+import { CreateProductUseCase, GetProductUseCase, UpdateProductUseCase, DeleteProductUseCase } from '../../src/application/use-cases/ProductUseCases';
+import { CreateUserUseCase, GetUserUseCase, UpdateUserUseCase, LoginUserUseCase } from '../../src/application/use-cases/UserUseCases';
+import { Product, ProductId, Price } from '../../src/domain';
+import { User, UserId, Email } from '../../src/domain';
 
 // Mock repository interface
 interface MockProductRepository {

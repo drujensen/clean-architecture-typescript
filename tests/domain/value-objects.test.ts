@@ -1,4 +1,4 @@
-import { Id, Email, Price } from '../src/domain/value-objects';
+import { Id, Email, Price } from '../../src/domain/value-objects';
 
 describe('Value Objects', () => {
   describe('Id', () => {

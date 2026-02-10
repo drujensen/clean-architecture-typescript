@@ -1,5 +1,5 @@
-import { Product, ProductId, Price } from '../src/domain';
-import { User, UserId, Email } from '../src/domain';
+import { Product, ProductId, Price } from '../../src/domain';
+import { User, UserId, Email } from '../../src/domain';
 
 describe('Entities', () => {
   describe('Product', () => {
