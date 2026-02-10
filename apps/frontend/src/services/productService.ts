@@ -10,7 +10,12 @@ class ProductService {
 
   async getAllProducts(): Promise<Product[]> {
     try {
-      return await this.apiService.get<Product[]>('/products');
+      const products = await this.apiService.get<Product[]>('/products');
+      // Ensure all products have a description field for backward compatibility
+      return products.map(product => ({
+        ...product,
+        description: product.description || 'No description available'
+      }));
     } catch (error) {
       console.error('Error fetching products:', error);
       throw error;
