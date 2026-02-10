@@ -87,7 +87,22 @@ export class ProductController {
       }
 
       await this.updateProductUseCase.execute(id, name?.trim(), price, description);
-      res.status(204).send();
+
+      // Fetch and return the updated product
+      const updatedProduct = await this.getProductUseCase.execute(id);
+      if (!updatedProduct) {
+        res.status(404).json({ error: 'Product not found after update' });
+        return;
+      }
+
+      res.json({
+        id: updatedProduct.getId().getValue(),
+        name: updatedProduct.getName(),
+        price: updatedProduct.getPrice().getValue(),
+        description: updatedProduct.getDescription(),
+        createdAt: updatedProduct.getCreatedAt(),
+        updatedAt: updatedProduct.getUpdatedAt(),
+      });
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
