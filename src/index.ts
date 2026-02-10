@@ -3,9 +3,13 @@ import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { MongoProductRepository } from './infrastructure/repositories/MongoProductRepository';
-import { CreateProductUseCase, GetProductUseCase, UpdateProductUseCase, DeleteProductUseCase } from './application';
+import { MongoUserRepository } from './infrastructure/repositories/MongoUserRepository';
+import { CreateProductUseCase, GetProductUseCase, UpdateProductUseCase, DeleteProductUseCase } from './application/use-cases/ProductUseCases';
+import { CreateUserUseCase, GetUserUseCase, UpdateUserUseCase, LoginUserUseCase, LogoutUserUseCase } from './application/use-cases/UserUseCases';
 import { ProductController } from './presentation/controllers/ProductController';
+import { UserController } from './presentation/controllers/UserController';
 import { setupProductRoutes } from './presentation/routes/ProductRoutes';
+import { setupUserRoutes } from './presentation/routes/UserRoutes';
 
 dotenv.config();
 
@@ -27,7 +31,18 @@ const updateProductUseCase = new UpdateProductUseCase(productRepository);
 const deleteProductUseCase = new DeleteProductUseCase(productRepository);
 const productController = new ProductController(createProductUseCase, getProductUseCase, updateProductUseCase, deleteProductUseCase);
 const productRoutes = setupProductRoutes(productController);
+
+const userRepository = new MongoUserRepository();
+const createUserUseCase = new CreateUserUseCase(userRepository);
+const getUserUseCase = new GetUserUseCase(userRepository);
+const updateUserUseCase = new UpdateUserUseCase(userRepository);
+const loginUserUseCase = new LoginUserUseCase(userRepository);
+const logoutUserUseCase = new LogoutUserUseCase();
+const userController = new UserController(createUserUseCase, getUserUseCase, updateUserUseCase, loginUserUseCase, logoutUserUseCase);
+const userRoutes = setupUserRoutes(userController);
+
 app.use('/api', productRoutes);
+app.use('/api', userRoutes);
 
 // TODO: Add Kafka event handling back when DI is fixed
 

@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import { CreateProductUseCase, GetProductUseCase, UpdateProductUseCase } from '../../application/use-cases/ProductUseCases';
-import { DeleteProductUseCase } from '../../application/use-cases/DeleteProductUseCase';
+import { CreateProductUseCase, GetProductUseCase, UpdateProductUseCase, DeleteProductUseCase } from '../../application/use-cases/ProductUseCases';
 import { ProductId } from '../../domain';
 
 export class ProductController {

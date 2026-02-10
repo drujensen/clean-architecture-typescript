@@ -1,2 +1,2 @@
 export * from './ProductUseCases';
-export * from './DeleteProductUseCase';
+export * from './UserUseCases';
