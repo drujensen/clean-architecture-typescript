@@ -1,0 +1,9 @@
+PUT http://localhost:3000/api/users/019c45f1-fc58-744c-9853-f6aaf0230882 HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+Content-Length: 48
+
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com"
+}
