@@ -61,8 +61,8 @@ Dependencies are manually injected at application startup, following Go-style de
 
 Organized test files for API endpoints:
 
-- `http/product/`: Product CRUD operations
-- `http/user/`: User management and authentication
+- `tests/http/product/`: Product CRUD operations
+- `tests/http/user/`: User management and authentication
 
 Use VS Code REST Client or similar tools to run these tests.
 
