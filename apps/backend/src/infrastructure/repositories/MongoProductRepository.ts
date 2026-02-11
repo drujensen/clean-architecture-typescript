@@ -23,7 +23,7 @@ const productSchema = new Schema<IProductDocument>({
 const ProductModel = mongoose.model<IProductDocument>('Product', productSchema);
 
 export class MongoProductRepository implements IProductRepository {
-  async save(product: Product): Promise<void> {
+  async save(product: Product): Promise<Product> {
     await ProductModel.findOneAndUpdate(
       { _id: product.getId().getValue() },
       {
@@ -36,6 +36,7 @@ export class MongoProductRepository implements IProductRepository {
       },
       { upsert: true, new: true }
     );
+    return product;
   }
 
   async findById(id: ProductId): Promise<Product | null> {
@@ -47,7 +48,6 @@ export class MongoProductRepository implements IProductRepository {
       Price.create(doc.price),
       doc.description
     );
-    // Since we're reconstructing, set updatedAt from DB
     (product as any).updatedAt = doc.updatedAt;
     return product;
   }

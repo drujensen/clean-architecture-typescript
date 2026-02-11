@@ -12,7 +12,6 @@ const Header: React.FC = () => {
           <nav className="space-x-4">
             <Link to="/" className="text-gray-600 hover:text-gray-900">Home</Link>
             <Link to="/products" className="text-gray-600 hover:text-gray-900">Products</Link>
-            <Link to="/users" className="text-gray-600 hover:text-gray-900">Users</Link>
           </nav>
         </div>
       </div>

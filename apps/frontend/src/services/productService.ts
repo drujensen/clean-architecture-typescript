@@ -11,7 +11,6 @@ class ProductService {
   async getAllProducts(): Promise<Product[]> {
     try {
       const products = await this.apiService.get<Product[]>('/products');
-      // Ensure all products have a description field for backward compatibility
       return products.map(product => ({
         ...product,
         description: product.description || 'No description available'
@@ -24,10 +23,7 @@ class ProductService {
 
   async createProduct(product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<Product> {
     try {
-      const createdProduct = await this.apiService.post<{ id: string }>('/products', product);
-
-      // Return the full product by fetching it
-      return await this.getProductById(createdProduct.id);
+      return await this.apiService.post<Product>('/products', product);
     } catch (error) {
       console.error('Error creating product:', error);
       throw error;
@@ -45,7 +41,6 @@ class ProductService {
 
   async updateProduct(id: string, product: Partial<Pick<Product, 'name' | 'description' | 'price'>>): Promise<Product> {
     try {
-      // PUT now returns the updated product directly
       return await this.apiService.put<Product>(`/products/${id}`, product);
     } catch (error) {
       console.error('Error updating product:', error);

@@ -30,7 +30,7 @@ const HomePage: React.FC = () => {
                 Manage Products
               </a>
               <a
-                href="/users"
+                href="#"
                 className="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-md transition duration-200 text-center"
               >
                 Manage Users

@@ -1,41 +1,15 @@
 import { Request, Response } from 'express';
-import { CreateProductUseCase, GetProductUseCase, GetAllProductsUseCase, UpdateProductUseCase, DeleteProductUseCase } from '../../application/use-cases/ProductUseCases';
+import { ProductUseCases } from '../../application/use-cases/ProductUseCases';
 import { ProductId } from '../../domain';
 
 export class ProductController {
   constructor(
-    private readonly createProductUseCase: CreateProductUseCase,
-    private readonly getProductUseCase: GetProductUseCase,
-    private readonly getAllProductsUseCase: GetAllProductsUseCase,
-    private readonly updateProductUseCase: UpdateProductUseCase,
-    private readonly deleteProductUseCase: DeleteProductUseCase
+    private readonly productUseCases: ProductUseCases,
   ) {}
-
-  async createProduct(req: Request, res: Response): Promise<void> {
-    try {
-      const { name, price, description } = req.body;
-
-      // Validate input types
-      if (typeof name !== 'string' || !name.trim()) {
-        throw new Error('Name must be a non-empty string');
-      }
-      if (typeof price !== 'number' || price <= 0) {
-        throw new Error('Price must be a positive number');
-      }
-      if (typeof description !== 'string') {
-        throw new Error('Description must be a string');
-      }
-
-      const id = await this.createProductUseCase.execute(name.trim(), price, description);
-      res.status(201).json({ id: id.getValue() });
-    } catch (error) {
-      res.status(400).json({ error: (error as Error).message });
-    }
-  }
 
   async getAllProducts(req: Request, res: Response): Promise<void> {
     try {
-      const products = await this.getAllProductsUseCase.execute();
+      const products = await this.productUseCases.findall();
       res.json(products.map(product => ({
         id: product.getId().getValue(),
         name: product.getName(),
@@ -52,12 +26,42 @@ export class ProductController {
   async getProduct(req: Request, res: Response): Promise<void> {
     try {
       const id = ProductId.fromString(req.params.id as string);
-      const product = await this.getProductUseCase.execute(id);
+      const product = await this.productUseCases.findById(id);
       if (!product) {
         res.status(404).json({ error: 'Product not found' });
         return;
       }
       res.json({
+        id: product.getId().getValue(),
+        name: product.getName(),
+        price: product.getPrice().getValue(),
+        description: product.getDescription(),
+        createdAt: product.getCreatedAt(),
+        updatedAt: product.getUpdatedAt(),
+      });
+    } catch (error) {
+      res.status(400).json({ error: (error as Error).message });
+    }
+  }
+
+  async createProduct(req: Request, res: Response): Promise<void> {
+    try {
+      const { name, price, description } = req.body;
+
+      // Validate input types
+      if (typeof name !== 'string' || !name.trim()) {
+        throw new Error('Name must be a non-empty string');
+      }
+      if (typeof price !== 'number' || price <= 0) {
+        throw new Error('Price must be a positive number');
+      }
+      if (typeof description !== 'string') {
+        throw new Error('Description must be a string');
+      }
+
+      const product = await this.productUseCases.create(name.trim(), price, description);
+
+      res.status(201).json({
         id: product.getId().getValue(),
         name: product.getName(),
         price: product.getPrice().getValue(),
@@ -86,10 +90,8 @@ export class ProductController {
         throw new Error('Description must be a string');
       }
 
-      await this.updateProductUseCase.execute(id, name?.trim(), price, description);
+      const updatedProduct = await this.productUseCases.update(id, name?.trim(), price, description);
 
-      // Fetch and return the updated product
-      const updatedProduct = await this.getProductUseCase.execute(id);
       if (!updatedProduct) {
         res.status(404).json({ error: 'Product not found after update' });
         return;
@@ -111,7 +113,7 @@ export class ProductController {
   async deleteProduct(req: Request, res: Response): Promise<void> {
     try {
       const id = ProductId.fromString(req.params.id as string);
-      await this.deleteProductUseCase.execute(id);
+      await this.productUseCases.delete(id);
       res.status(204).send();
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
